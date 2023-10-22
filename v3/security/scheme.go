@@ -1,10 +1,11 @@
-/*Package security contains the types used by the code generators to
+/*
+Package security contains the types used by the code generators to
 secure goa endpoint. It supports the following security schemes:
 
-  * Basic security using usernames and passwords.
-  * API key security using keys.
-  * JWT security using JWT tokens.
-  * OAuth2 security using OAuth2 tokens.
+  - Basic security using usernames and passwords.
+  - API key security using keys.
+  - JWT security using JWT tokens.
+  - OAuth2 security using OAuth2 tokens.
 */
 package security
 
@@ -49,8 +50,14 @@ type (
 		// RequiredScopes holds a list of scopes which are required
 		// by the scheme. It is a subset of Scopes field.
 		RequiredScopes []string
+		// GScopes
+		GScopes []GScope
 	}
 
+	GScope struct {
+		Parent string
+		ID     interface{}
+	}
 	// OAuth2Scheme represents the oauth2 security scheme.
 	OAuth2Scheme struct {
 		// Name is the scheme name defined in the design.

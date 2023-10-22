@@ -284,6 +284,14 @@ func New{{ .VarName }}Endpoint(s {{ .ServiceVarName }}{{ range .Schemes }}, auth
 					Name: {{ printf "%q" .SchemeName }},
 					Scopes: []string{ {{- range .Scopes }}{{ printf "%q" . }}, {{ end }} },
 					RequiredScopes: []string{ {{- range $r.Scopes }}{{ printf "%q" . }}, {{ end }} },
+					GScopes : []security.GScope{
+						{{- range $r.GScopes }}
+						{
+							ID : p.{{ .ID }},
+							Parent : {{ printf "%q" .Parent }},
+						},
+						{{- end }}
+					},
 				}
 				{{- if $s.CredPointer }}
 				var token string

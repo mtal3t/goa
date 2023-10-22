@@ -224,6 +224,12 @@ type (
 		Schemes []*SchemeData
 		// Scopes list the required scopes.
 		Scopes []string
+
+		GScopes []Scope
+	}
+
+	Scope struct {
+		Parent, ID string
 	}
 
 	// UserTypeData contains the data describing a user-defined type.
@@ -842,7 +848,14 @@ func buildMethodData(m *expr.MethodExpr, svcPkgName string, service *expr.Servic
 			rs = rs.Append(sch)
 			schemes = schemes.Append(sch)
 		}
-		reqs = append(reqs, &RequirementData{Schemes: rs, Scopes: req.Scopes})
+		scopes := []Scope{}
+		for _, s := range req.GScopes {
+			scopes = append(scopes, Scope{
+				Parent: s.Parent,
+				ID:     codegen.Goify(s.ID, true),
+			})
+		}
+		reqs = append(reqs, &RequirementData{Schemes: rs, Scopes: req.Scopes, GScopes: scopes})
 	}
 	var httpMet *expr.HTTPEndpointExpr
 	if httpSvc := expr.Root.HTTPService(m.Service.Name); httpSvc != nil {
@@ -1109,7 +1122,6 @@ func collectProjectedTypes(projected, att *expr.AttributeExpr, viewspkg string, 
 // buildProjectedType builds projected type for the given user type.
 //
 // viewspkg is the name of the views package
-//
 func buildProjectedType(projected, att *expr.AttributeExpr, viewspkg string, scope, viewScope *codegen.NameScope) *ProjectedTypeData {
 	var (
 		projections []*InitData
@@ -1579,7 +1591,6 @@ func buildValidations(projected *expr.AttributeExpr, scope *codegen.NameScope) [
 // target data structures in the transformation code.
 //
 // view is used to generate the constructor function name.
-//
 func buildConstructorCode(src, tgt *expr.AttributeExpr, sourceVar, targetVar string, sourceCtx, targetCtx *codegen.AttributeContext, view string) (string, []*codegen.TransformFunctionData) {
 	var (
 		helpers []*codegen.TransformFunctionData

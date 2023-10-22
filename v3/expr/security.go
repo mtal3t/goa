@@ -47,6 +47,11 @@ type (
 		Schemes []*SchemeExpr
 		// Scopes list the required scopes if any.
 		Scopes []string
+		// Granular RBAC
+		GScopes []struct {
+			Parent string
+			ID     string
+		}
 	}
 
 	// SchemeExpr defines a security scheme used to authenticate against the
